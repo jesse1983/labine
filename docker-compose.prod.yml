@@ -1,0 +1,32 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:5.5.51
+    user: "1000"
+    container_name: labine.mysql
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: prestashop
+      MYSQL_USER: labine
+      MYSQL_PASSWORD: secrets
+    volumes:
+      - ./database:/var/lib/mysql
+  web:
+    image: jesse1983/labine:latest
+    container_name: labine.web
+    command: bash -c "/tmp/docker_run.sh"
+    volumes:
+      - ./html:/var/www/html
+    ports:
+      - 4000:80
+    links:
+      - "mysql:mysql"
+    environment:
+      DB_SERVER: mysql
+      DB_USER: labine
+      DB_PASSWD: secrets
+      PS_FOLDER_ADMIN: porao
+      PS_FOLDER_INSTALL: starting
+
